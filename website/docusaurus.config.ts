@@ -7,15 +7,9 @@ const siteUrl = 'https://flagsweep-hq.github.io';
 const baseUrl = '/flagsweep/';
 const repoUrl = 'https://github.com/flagsweep-hq/flagsweep';
 
-// The Formspree form ID for the contact page, the part after /f/ in the form's endpoint.
-// While this is empty the contact form renders with Send disabled, so no message is lost.
-const formspreeFormId = '';
+const formspreeFormId = process.env.FORMSPREE_FORM_ID ?? '';
 const contactFormAction = formspreeFormId && `https://formspree.io/f/${formspreeFormId}`;
-
-// Google Analytics (GA4). The measurement ID is in GA under Admin > Data streams. While this is
-// empty no analytics script is loaded. Before turning it on for EU visitors, add a cookie consent
-// banner (GDPR/ePrivacy): Docusaurus has none built in.
-const googleAnalyticsId = '';
+const googleAnalyticsId = process.env.GOOGLE_ANALYTICS_ID ?? '';
 
 const config: Config = {
   title: 'Flagsweep',

@@ -41,6 +41,9 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run build
+        env:
+          FORMSPREE_FORM_ID: ${{ secrets.FORMSPREE_FORM_ID }}
+          GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: website/build

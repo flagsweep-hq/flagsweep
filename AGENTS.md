@@ -96,7 +96,7 @@ These cost debugging time before.
 - `.md` files are parsed as CommonMark, not MDX (`markdown.format: 'detect'`), so `<store>` and `{id}` in prose are safe. A page that needs JSX, such as tabs, keeps its `.md` name and sets `mdx: {format: mdx}` in its front matter, so links to it still work on GitHub.
 - `![alt](shot.png){ .screenshot screenshot--dialog }` works through `website/src/remark/imageClasses.ts`, which puts the classes on the paragraph. The styles are in `website/src/css/custom.css`.
 - A React page that is linked by anchor (`/#features`) has to register it with `useBrokenLinks().collectAnchor`, or the build fails.
-- The site URL, base URL, repo URL, Formspree form ID and Google Analytics ID are constants at the top of `website/docusaurus.config.ts`. Analytics stays off while the ID is empty.
+- The site URL, base URL and repo URL are constants at the top of `website/docusaurus.config.ts`. The Formspree form ID and Google Analytics ID are read there from `FORMSPREE_FORM_ID` and `GOOGLE_ANALYTICS_ID`, which `docs.yml` sets from repository secrets. Unset, the contact form is disabled and no analytics script is loaded.
 - The blog is wired up but has only a draft post and no navbar link yet.
 - The MkDocs site served docs from the root. `plugin-client-redirects` keeps `/guides/...` and `/installation/...` working.
 
@@ -108,7 +108,7 @@ These cost debugging time before.
 - The UI says "Retire by". The wire field is still `expiresAt`.
 - Flags are created disabled, in every selected environment at once.
 - Connection strings are stored as plain text unless `DataProtection__SecretKey` is set, and with AES-GCM when it is.
-- v0.1.0 is released. Schema and stored-data changes need a migration that upgrades an existing install.
+- v0.1.0 is not released yet, so the schema lives in a single `InitialCreate` migration. For a schema change, delete the `Migrations` folder and regenerate it with `dotnet ef migrations add InitialCreate --project src/api/Flagsweep.Infrastructure --startup-project src/api/Flagsweep.Api`, and delete any local `data/*.db`. Once v0.1.0 is out, every schema change needs a migration that upgrades an existing install.
 - The licence is Apache-2.0. Never write MIT or AGPL in docs or landing copy.
 
 ## Local machine
