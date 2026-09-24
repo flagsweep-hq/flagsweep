@@ -46,3 +46,15 @@
 .markdown p.screenshot--dialog img { max-width: 32.5rem; }
 .markdown p.screenshot--small img { max-width: 22.5rem; }
 .markdown p.screenshot--row img { border-radius: 6px; }
+
+@media (max-width: 64rem) {
+  .footer { padding: 1.75rem 0 1.25rem; font-size: .85rem; }
+  .footer .container { padding: 0 1.25rem; }
+  .footer__links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 0; }
+  .footer__links .footer__col { margin: 0; padding: 0; max-width: none; flex: none; }
+  .footer__title { margin-bottom: .5rem; font-size: .7rem; }
+  .footer__item { padding: .15rem 0; overflow-wrap: anywhere; }
+  .footer__link-item { white-space: normal; display: inline; }
+  .footer__bottom { margin-top: 1.25rem; }
+  .footer__copyright { font-size: .8rem; }
+}

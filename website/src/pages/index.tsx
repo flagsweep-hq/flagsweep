@@ -1,3 +1,4 @@
+import Head from '@docusaurus/Head';
 import Link from '@docusaurus/Link';
 import useBrokenLinks from '@docusaurus/useBrokenLinks';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
@@ -174,7 +175,8 @@ function GettingStarted(): ReactNode {
             Read the getting started guide
           </Link>
           <Link className="fm-start__alt" to="/docs/installation/">
-            Other ways to install, or try it with demo data →
+            <span className="fm-start__alt-long">Other ways to install, or try it with demo data →</span>
+            <span className="fm-start__alt-short">Other ways to install →</span>
           </Link>
         </div>
       </div>
@@ -317,7 +319,7 @@ function Editions(): ReactNode {
           </article>
         </div>
         <details className="fm-compare">
-          <summary>Compare every feature, side by side</summary>
+          <summary>Compare all features</summary>
           <div className="fm-compare__scroll">
             <table className="fm-compare__table">
               <thead>
@@ -422,6 +424,9 @@ export default function Home(): ReactNode {
       title="FeatureOps for Azure App Configuration"
       description="Self-hosted FeatureOps for Azure App Configuration, with an attributed audit trail, drift detection, locks, protected environments, owners, and retire-by dates."
     >
+      <Head>
+        <html data-landing="" />
+      </Head>
       <div className="fm-landing">
         <Hero repoUrl={repoUrl} />
         <GettingStarted />

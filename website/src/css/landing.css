@@ -261,6 +261,7 @@
 .fm-start__links { display: flex; flex-direction: column; align-items: center; gap: 1.125rem; margin-top: 1.75rem; }
 .fm-start__alt { font-size: 1.125rem; font-weight: 700; color: var(--fm-coral-deep); text-decoration: none; }
 .fm-start__alt:hover { text-decoration: underline; }
+.fm-start__alt-short { display: none; }
 
 /* --- 6. Providers logo strip ------------------------------------------------ */
 .fm-providers { padding: 4.375rem 1.875rem 5rem; }
@@ -402,16 +403,32 @@
 .fm-landing .fm-thesis__list { margin: 0 auto 3rem; display: grid; }
 .fm-landing .fm-thesis__close { margin: 0; }
 
+/* --- Scroll snap. Proximity, not mandatory: sections run from a third of a screen to
+   more than one, so a hard snap would trap the reader inside the tall ones and skip
+   the short ones. Desktop only, and off for anyone who asked for less motion. --- */
+@media (min-width: 64rem) and (prefers-reduced-motion: no-preference) {
+  html[data-landing] { scroll-snap-type: y proximity; scroll-padding-top: var(--ifm-navbar-height, 60px); }
+  html[data-landing] .fm-landing > section { scroll-snap-align: start; }
+}
+
 /* --- Responsive. Last, so it beats the resets above. ---------------------------------------------------------------- */
 @media (max-width: 64rem) {
   .fm-hero { grid-template-columns: 1fr; justify-items: center; text-align: center;
     gap: 3.125rem; max-width: var(--fm-max); padding: 4.0625rem 1.875rem 4.375rem; }
   .fm-hero__copy { max-width: 47.5rem; }
   .fm-cta { justify-content: center; }
-  .fm-landing .fm-shot { width: min(94vw, 57.5rem); margin-inline: auto; }
+  .fm-hero > * { min-width: 0; }
+  .fm-landing .fm-shot { width: 100%; max-width: 57.5rem; margin-inline: auto; }
   .fm-features__grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 40rem) {
+  .fm-landing .fm-shot { display: none; }
+  .fm-start__alt { white-space: nowrap; text-align: center; }
+  .fm-start__alt-long { display: none; }
+  .fm-start__alt-short { display: inline; }
+  .fm-landing .fm-compare > summary { white-space: nowrap; font-size: 1.1rem; padding: .9375rem 1.5rem; }
+  .fm-landing .fm-faq__list summary { font-size: 1.05rem; gap: 1rem; }
+  .fm-landing .fm-faq__list details p { font-size: 1rem; }
   .fm-features__grid, .fm-editions__grid { grid-template-columns: 1fr; }
   .fm-form { flex-direction: column; }
 }
