@@ -1,0 +1,147 @@
+# DRAFT — publishes the Flagsweep image to GitHub Container Registry.
+#
+# What gets pushed, and when:
+#   push to main          -> ghcr.io/<owner>/flagsweep:edge
+#   tag v1.2.3            -> :1.2.3, :1.2, :1, :latest, plus a GitHub release
+#                            whose notes are that version's CHANGELOG.md section
+#   pull request          -> build only, nothing is pushed
+#   workflow_dispatch     -> build only unless "push" is set to true
+#
+# Uses the built-in GITHUB_TOKEN; no secrets to configure. The package is
+# private until it is made public under the repository's Packages settings.
+
+name: Release image
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      push:
+        description: "Push the image to ghcr.io"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # create the GitHub release on tag pushes
+  packages: write
+  id-token: write
+  attestations: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  image:
+    name: Build & publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve image name and push policy
+        id: cfg
+        env:
+          REPO: ${{ github.repository }}
+        run: |
+          # ghcr.io requires a lowercase image path.
+          echo "image=ghcr.io/${REPO,,}" >> "$GITHUB_OUTPUT"
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "push=false" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "push=${{ inputs.push }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "push=true" >> "$GITHUB_OUTPUT"
+          fi
+          # Assembly version stamped into the build: the tag's semver, else 0.0.0.
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=0.0.0" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Docker metadata (tags and OCI labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ steps.cfg.outputs.image }}
+          tags: |
+            type=edge,branch=${{ github.event.repository.default_branch }}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=ref,event=pr
+          labels: |
+            org.opencontainers.image.title=Flagsweep
+            org.opencontainers.image.description=FeatureOps on top of the feature flags in your cloud.
+
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Log in to ghcr.io
+        if: steps.cfg.outputs.push == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build (and push)
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: ${{ steps.cfg.outputs.push == 'true' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VERSION=${{ steps.cfg.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Attest build provenance
+        if: steps.cfg.outputs.push == 'true'
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ steps.cfg.outputs.image }}
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
+
+  release:
+    name: GitHub release
+    needs: image
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract this version's notes from CHANGELOG.md
+        id: notes
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          # Take everything under "## [X.Y.Z]" up to the next "## [" heading
+          # or the link reference definitions at the end of the file.
+          awk -v v="${VERSION#v}" '
+            $0 ~ "^## \\[" v "\\]" { on=1; next }
+            on && (/^## \[/ || /^\[/) { exit }
+            on { print }
+          ' CHANGELOG.md > notes.md
+          if [[ ! -s notes.md ]]; then
+            echo "No CHANGELOG.md section for ${VERSION#v}; rename [Unreleased] before tagging." >&2
+            exit 1
+          fi
+          {
+            echo
+            echo "**Image:** \`ghcr.io/${GITHUB_REPOSITORY,,}:${VERSION#v}\`"
+          } >> notes.md
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          body_path: notes.md

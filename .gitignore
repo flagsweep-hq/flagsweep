@@ -1,0 +1,32 @@
+# .NET
+**/bin/
+**/obj/
+**/bin\\Debug/
+*.lscache
+*.suo
+*.user
+*.sln.docuser.json
+
+# Node / Vite
+**/node_modules/
+**/dist/
+**/.vite/
+
+# IDE and tool state
+.vscode/
+.idea/
+.playwright-cli/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+*.local
+.env
+
+# Runtime data: SQLite database, key ring, anything the app writes
+src/api/Flagsweep.Api/data/
+
+# Claude Code local state and worktrees
+.claude/

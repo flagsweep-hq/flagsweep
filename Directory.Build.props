@@ -1,0 +1,16 @@
+<Project>
+  <!--
+    Version for local builds. Release builds override this from the git tag:
+    the Dockerfile passes -p:Version=$VERSION, which the release workflow sets
+    from vX.Y.Z. Without this default a plain `dotnet run` would report the SDK's
+    1.0.0 from /health, which reads as a real release.
+  -->
+  <PropertyGroup>
+    <Version>0.0.0-dev</Version>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <!-- IDE0005 (unused usings) only runs on build when doc generation is on; CS1591 is its side effect. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591;CS1573</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>

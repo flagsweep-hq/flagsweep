@@ -1,0 +1,25 @@
+# Local development dependencies.
+#
+# The API and frontend run natively (see README "Local Development");
+# this provides a local Azure App Configuration emulator so no Azure
+# account is needed:
+#
+#   docker compose -f docker-compose.dev.yml up -d
+#
+# Then create a connection in Flagsweep with this connection string
+# (the emulator accepts any secret in dev mode):
+#
+#   Endpoint=http://localhost:4577/devstoreaccount1-appconfig;Id=devstoreaccount1;Secret=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMh0==
+#
+# Note: storage is in-memory — flags reset when the container restarts.
+services:
+  floci-az:
+    image: floci/floci-az:latest
+    ports:
+      - "4577:4577"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf 'http://localhost:4577/devstoreaccount1-appconfig/kv?api-version=2023-11-01' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s

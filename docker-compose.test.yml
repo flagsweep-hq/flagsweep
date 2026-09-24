@@ -1,0 +1,26 @@
+services:
+  app:
+    build: .
+    ports:
+      - "9090:8080"
+    command: ["--sandbox", "--e2e"]
+    environment:
+      - E2E__Secret=flagsweep-e2e
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/health || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  e2e:
+    build: ./e2e
+    environment:
+      - BASE_URL=http://app:8080
+      - E2E_SECRET=flagsweep-e2e
+    depends_on:
+      app:
+        condition: service_healthy
+    volumes:
+      - ./e2e/reports:/e2e/reports
+    entrypoint: ["/bin/sh", "-c", "mkdir -p /e2e/reports && npx cucumber-js"]

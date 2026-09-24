@@ -1,0 +1,417 @@
+/* Landing and contact pages (src/pages). Everything is scoped to .fm-landing.
+   Tokens follow the app: Figtree, flamingo coral, warm off-white, charcoal. */
+
+:root {
+  --fm-coral: #f2607a;
+  --fm-coral-deep: #d64a63;
+  --fm-coral-soft: #fde7ec;
+  --fm-ink: #1c1b22;
+  --fm-ink-2: #3d3b47;
+  --fm-mute: #7a7784;
+  --fm-line: #e9e4dd;
+  --fm-paper: #fdfbf9;
+  --fm-paper-2: #f6f1ea;
+  --fm-card: #ffffff;
+  --fm-amber: #b7791f;
+  --fm-amber-soft: #fdf2dc;
+  --fm-sky: #2f7fb8;
+  --fm-sky-soft: #e3f0fa;
+  --fm-emerald: #1f9d6a;
+  --fm-emerald-soft: #dff5ea;
+  --fm-rose: #c73a52;
+  --fm-violet: #6b3fd6;
+  --fm-violet-soft: #eee6ff;
+  --fm-mono: "JetBrains Mono", ui-monospace, monospace;
+  --fm-max: 70rem;
+}
+
+.fm-landing {
+  overflow-x: clip;  /* decorative gradients must never add a horizontal scrollbar */
+  font-family: "Figtree", system-ui, sans-serif;
+  color: var(--fm-ink);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.55;
+}
+.fm-landing code {
+  font-family: var(--fm-mono);
+  font-size: .85em; background: var(--fm-paper-2); padding: .1em .35em; border-radius: 4px;
+}
+
+/* --- Shared bits ---------------------------------------------------------- */
+.fm-section { max-width: var(--fm-max); margin: 0 auto; padding: 1.25rem 1.875rem 5.625rem; }
+.fm-section__head { max-width: 55rem; margin: 0 auto 2.5rem; text-align: center; }
+.fm-kicker {
+  font-size: .9rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--fm-coral-deep);
+}
+.fm-kicker--light { color: #f9b3c1; }
+.fm-kicker--center { text-align: center; }
+.fm-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .625rem;
+  padding: 1rem 1.5625rem; border-radius: 999px; font-weight: 700; font-size: 1.1875rem;
+  text-decoration: none; border: 1.5px solid transparent; cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.fm-btn--primary {
+  background: var(--fm-coral); color: #fff !important; border-color: var(--fm-coral);
+  box-shadow: 0 8px 24px -10px rgba(242, 96, 122, .8);
+}
+.fm-btn--primary:hover { background: var(--fm-coral-deep); transform: translateY(-1px); }
+.fm-btn--ghost { color: var(--fm-ink) !important; border-color: var(--fm-line); background: var(--fm-card); }
+.fm-btn--ghost:hover { border-color: var(--fm-ink); transform: translateY(-1px); }
+.fm-chip {
+  white-space: nowrap;
+  display: inline-flex; align-items: center; font-size: .775rem; font-weight: 700;
+  letter-spacing: .04em; padding: .1875rem .5625rem; border-radius: 999px; line-height: 1.3; vertical-align: middle;
+}
+.fm-chip--amber { background: var(--fm-amber-soft); color: var(--fm-amber); }
+.fm-chip--sky { background: var(--fm-sky-soft); color: var(--fm-sky); margin-left: .5rem; }
+.fm-chip--live { background: var(--fm-emerald-soft); color: var(--fm-emerald); }
+.fm-chip--soon { background: var(--fm-violet-soft); color: var(--fm-violet); text-transform: uppercase; letter-spacing: .08em; font-size: .725rem; }
+.fm-chip--plan { background: var(--fm-sky-soft); color: var(--fm-sky); text-transform: uppercase; letter-spacing: .08em; font-size: .725rem; }
+.fm-chip--onDark { background: rgba(196,176,255,.16); color: #d9ccff; }
+.fm-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.fm-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: .6875rem; }
+.fm-checks li { position: relative; padding-left: 2rem; font-size: 1.1875rem; }
+.fm-checks li::before {
+  content: ""; position: absolute; left: 0; top: .525rem; width: 1.125rem; height: 1.125rem; border-radius: 50%;
+  background: var(--fm-coral-soft);
+}
+.fm-checks li::after {
+  content: ""; position: absolute; left: .3375rem; top: .725rem; width: .375rem; height: .625rem;
+  border: solid var(--fm-coral-deep); border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+
+/* --- Banded sections: full-width tint, container inside ------------------- */
+.fm-band { background: var(--fm-paper-2); border-top: 1px solid var(--fm-line); border-bottom: 1px solid var(--fm-line); }
+.fm-band + .fm-band { border-top: 0; }
+/* One accent beat in the run of warm neutrals, on the section that asks for a decision.
+   A wash rather than flat coral-soft, which is too saturated to hold a whole section. */
+.fm-band--accent {
+  background: linear-gradient(180deg, #fff4f7 0%, var(--fm-paper) 100%);
+  border-top: 1px solid var(--fm-line); border-bottom: 1px solid var(--fm-line);
+}
+.fm-wrap { max-width: var(--fm-max); margin: 0 auto; }
+
+/* --- Reveal on load -------------------------------------------------------- */
+.fm-reveal { opacity: 0; transform: translateY(14px); animation: fm-in .7s cubic-bezier(.2,.7,.2,1) forwards; animation-delay: calc(var(--d, 0) * 110ms); }
+@keyframes fm-in { to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .fm-reveal { animation: none; opacity: 1; transform: none; }
+}
+
+/* --- 1. Hero ---------------------------------------------------------------- */
+/* A little wider than the rest of the page, and weighted towards the screenshot:
+   the flag list needs real width before its rollout chips and status badges are
+   readable. */
+/* Copy left, product right, the shot running off the right edge rather than being
+   shrunk to fit. `.fm-landing` clips the overflow so the bleed costs no scrollbar. */
+.fm-hero {
+  position: relative; display: grid; grid-template-columns: minmax(25rem, 33.75rem) 1fr;
+  align-items: center; gap: 4.375rem; max-width: 92.5rem; margin: 0 auto;
+  padding: 6.25rem 1.875rem 6.875rem;
+}
+.fm-hero__copy { max-width: none; }
+.fm-hero::before {
+  content: ""; position: absolute; inset: -10% 0 auto auto; width: min(60%, 57.5rem); height: 120%;
+  background: radial-gradient(closest-side, rgba(242,96,122,.16), transparent 70%);
+  pointer-events: none; z-index: 0;
+}
+.fm-hero > * { position: relative; z-index: 1; }
+.fm-h1 { font-size: clamp(2.375rem, 2.9vw, 3.375rem); line-height: 1.1; letter-spacing: -.025em; font-weight: 800; margin-bottom: 2rem; }
+.fm-h1 em { font-style: normal; color: var(--fm-coral-deep); }
+.fm-lede { font-size: 1.1875rem; line-height: 1.65; color: var(--fm-ink-2); max-width: none; margin-bottom: 2rem; }
+.fm-value { list-style: none; margin: 0 0 2.375rem; padding: 0; display: grid; gap: 1rem; max-width: none; }
+.fm-value li { position: relative; padding-left: 1.75rem; font-size: 1.1rem; line-height: 1.55; color: var(--fm-ink-2); }
+.fm-value li b { color: var(--fm-ink); font-weight: 700; }
+.fm-value li::before { content: ""; position: absolute; left: 0; top: .6rem; width: .6875rem; height: .6875rem; border-radius: 50%; background: var(--fm-coral); box-shadow: 0 0 0 3px var(--fm-coral-soft); }
+.fm-cta { display: flex; flex-wrap: wrap; align-items: center; gap: .9375rem; }
+
+/* --- Product screenshot ------------------------------------------------------ */
+/* Deliberately wider than the hero's text container: the whole app is in this shot,
+   so it needs to break out to stay readable. 95rem tracks the asset's own 1680px,
+   which keeps it at 1:1 on a 2x display rather than upscaled. */
+.fm-shot {
+  margin: 0; width: clamp(42.5rem, calc(100vw - 32.5rem), 80rem); border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--fm-line); background: var(--fm-card);
+  box-shadow: 0 40px 80px -40px rgba(28,27,34,.45), 0 2px 8px rgba(28,27,34,.06);
+}
+.fm-shot img { display: block; width: 100%; height: auto; }
+
+/* --- The idea ----------------------------------------------------------------
+   The one dark beat in the upper half of the page. It is pure text, so a dark
+   ground costs nothing here — unlike Getting started, whose terminal card would
+   vanish into it. */
+.fm-thesis {
+  position: relative; background: var(--fm-ink); color: #f4f1ee;
+  padding: 6.25rem 1.875rem 6.5625rem; overflow: hidden;
+}
+.fm-thesis__inner { position: relative; max-width: 55rem; margin: 0 auto; }
+.fm-thesis h2 {
+  color: #fff; font-size: clamp(2.5rem, 3.6vw, 3.625rem); line-height: 1.1;
+  letter-spacing: -.025em; font-weight: 800; margin: 0 0 1.625rem; text-align: center;
+}
+.fm-thesis__lede {
+  color: #cfcbd6; font-size: 1.275rem; line-height: 1.65; margin: 0 auto 3rem;
+  max-width: 50rem; text-align: center;
+}
+.fm-thesis__list { list-style: none; margin: 0 auto 3rem; padding: 0; display: grid; gap: 1.125rem; max-width: 45rem; }
+.fm-thesis__list li {
+  position: relative; padding-left: 1.875rem; color: #cfcbd6;
+  font-size: 1.225rem; line-height: 1.55;
+}
+.fm-thesis__list li::before {
+  content: ""; position: absolute; left: 0; top: .625rem; width: .625rem; height: .625rem;
+  border-radius: 50%; background: var(--fm-coral); box-shadow: 0 0 0 4px rgba(242,96,122,.18);
+}
+.fm-thesis__list b { color: #fff; font-weight: 700; }
+.fm-thesis__close {
+  margin: 0; padding-top: 2.125rem; border-top: 1px solid rgba(255,255,255,.12);
+  color: #fff; font-size: 1.325rem; font-weight: 600; text-align: center;
+}
+
+/* --- 2. Editions ----------------------------------------------------------- */
+.fm-editions { padding: 4.375rem 1.875rem 5rem; }
+.fm-editions__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.fm-edition {
+  background: var(--fm-card); border: 1px solid var(--fm-line); border-radius: 18px; padding: 2.25rem 2.25rem 2.375rem;
+  display: flex; flex-direction: column; gap: 1.25rem;
+}
+.fm-edition--enterprise { border-color: var(--fm-violet); box-shadow: 0 24px 50px -36px rgba(107,63,214,.6); }
+.fm-edition__name { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; font-size: 1.75rem; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; }
+.fm-edition__tag { font-size: 1.3125rem; font-weight: 600; color: var(--fm-ink); }
+.fm-edition > p:not(.fm-edition__tag) { color: var(--fm-ink-2); font-size: 1.1875rem; }
+.fm-edition .fm-checks { flex: 1; align-content: start; }
+.fm-edition .fm-btn { align-self: flex-start; }
+/* The label under the Cloud card's blurb: names what the list below adds. */
+.fm-edition__plus {
+  margin: .25rem 0 .125rem; font-size: .875rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--fm-coral-deep);
+}
+
+/* Centred and button-sized: as a small left-aligned link this read as a footnote,
+   when it is the section's actual next step. */
+.fm-compare { margin-top: 3rem; text-align: center; }
+.fm-compare > summary {
+  cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: .75rem;
+  font-size: 1.25rem; font-weight: 700; color: var(--fm-coral-deep);
+  padding: 1.0625rem 2rem; border: 1px solid var(--fm-coral); border-radius: 999px;
+  background: var(--fm-card);
+  transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+}
+.fm-compare > summary:hover {
+  transform: translateY(-1px); background: var(--fm-coral-soft);
+  box-shadow: 0 10px 26px -14px rgba(242, 96, 122, .9);
+}
+.fm-compare > summary::-webkit-details-marker { display: none; }
+/* A chevron that turns on open, rather than a plus badge — this reveals a table,
+   it does not add anything. */
+.fm-compare > summary::before {
+  content: ""; width: .525rem; height: .525rem; flex: none; background: none;
+  border: solid currentColor; border-width: 0 2px 2px 0;
+  transform: translateY(-2px) rotate(45deg); transition: transform .2s ease;
+}
+.fm-compare[open] > summary::before { transform: translateY(1px) rotate(-135deg); }
+.fm-compare__scroll { text-align: left; overflow-x: auto; border: 1px solid var(--fm-line); border-radius: 16px; background: var(--fm-card); margin-top: 1.25rem; }
+.fm-compare__table { width: 100%; border-collapse: collapse; font-size: 1.15rem; min-width: 47.5rem; }
+.fm-compare__table th, .fm-compare__table td { padding: .875rem 1.375rem; text-align: left; vertical-align: middle; border-bottom: 1px solid var(--fm-line); }
+.fm-compare__table thead th { padding: 1.125rem 1.375rem; font-size: 1.25rem; font-weight: 800; }
+.fm-compare__table thead th:first-child { width: 34%; }
+.fm-compare__table thead th:not(:first-child) { width: 33%; }
+.fm-compare__enterprise { background: var(--fm-violet-soft); }
+.fm-compare__table tbody td:last-child { background: color-mix(in srgb, var(--fm-violet-soft) 45%, transparent); }
+.fm-compare__table tbody th { font-weight: 600; color: var(--fm-ink); }
+.fm-compare__table tbody td { color: var(--fm-ink-2); font-size: 1.1rem; }
+.fm-compare__table tbody td b { color: var(--fm-ink); }
+.fm-compare__table tbody tr:last-child th, .fm-compare__table tbody tr:last-child td { border-bottom: 0; }
+.fm-compare__group th { padding: 1.125rem 1.375rem .5rem; font-size: .825rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--fm-coral-deep); background: var(--fm-paper); }
+.fm-ok { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--fm-emerald-soft); color: var(--fm-emerald); }
+.fm-ok::after { content: ""; width: .4rem; height: .6875rem; border: solid currentColor; border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-1px, -1px); }
+.fm-no { color: var(--fm-mute); }
+
+/* --- 4. Features ------------------------------------------------------------ */
+.fm-features { padding: 4.375rem 1.875rem 5rem; }
+.fm-features__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+.fm-feature {
+  background: var(--fm-card); border: 1px solid var(--fm-line); border-radius: 14px;
+  padding: 1.6875rem 1.75rem 1.75rem; display: flex; flex-direction: column; gap: .625rem; transition: transform .15s, box-shadow .15s;
+}
+.fm-feature:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -28px rgba(28,27,34,.5); }
+.fm-feature h3 { font-size: 1.275rem; font-weight: 800; letter-spacing: -.01em; }
+.fm-feature p { font-size: 1.125rem; color: var(--fm-ink-2); flex: 1; }
+.fm-feature a { font-size: 1.0625rem; font-weight: 700; color: var(--fm-coral-deep); text-decoration: none; }
+.fm-feature a:hover { text-decoration: underline; }
+
+/* --- 5. Get started ----------------------------------------------------------- */
+.fm-start { padding: 4.375rem 1.875rem 5rem; }
+.fm-section__lede { color: var(--fm-ink-2); font-size: 1.275rem; }
+.fm-code { background: var(--fm-ink); color: #f4f1ee; border-radius: 14px; overflow: hidden; box-shadow: 0 30px 50px -30px rgba(28,27,34,.5); }
+.fm-code__bar { display: flex; align-items: center; gap: .5rem; padding: .75rem 1.125rem; border-bottom: 1px solid rgba(255,255,255,.08); }
+.fm-code__bar span { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.18); }
+.fm-code__bar span:first-child { background: var(--fm-coral); }
+.fm-code pre { margin: 0; padding: 1.375rem 1.5625rem 1.625rem; font-family: var(--fm-mono); font-size: 1.075rem; line-height: 1.7; background: transparent; color: inherit; overflow-x: auto; }
+.fm-copy {
+  margin-left: auto; display: inline-flex; align-items: center; gap: .5rem; padding: .375rem .875rem; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06); color: #f4f1ee; font: inherit; font-size: .925rem; font-weight: 700; cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.fm-copy:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.3); }
+.fm-copy--done { background: var(--fm-emerald); border-color: var(--fm-emerald); color: #fff; }
+.fm-copy span { width: auto; height: auto; border-radius: 0; background: none; }
+.fm-start__links { display: flex; flex-direction: column; align-items: center; gap: 1.125rem; margin-top: 1.75rem; }
+.fm-start__alt { font-size: 1.125rem; font-weight: 700; color: var(--fm-coral-deep); text-decoration: none; }
+.fm-start__alt:hover { text-decoration: underline; }
+
+/* --- 6. Providers logo strip ------------------------------------------------ */
+.fm-providers { padding: 4.375rem 1.875rem 5rem; }
+.fm-logos { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 1.25rem; }
+.fm-logo {
+  display: inline-flex; align-items: center; gap: 1rem; padding: .875rem 1.375rem .875rem 1rem;
+  border: 1px solid var(--fm-line); border-radius: 999px; background: var(--fm-card);
+}
+.fm-logo--soon { border-style: dashed; border-color: var(--fm-violet); }
+.fm-logo__mark { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; }
+.fm-logo__mark svg { width: 20px; height: 20px; fill: currentColor; display: block; }
+.fm-logo__mark--azure { background: var(--fm-sky-soft); color: var(--fm-sky); }
+.fm-logo__mark--aws { background: var(--fm-amber-soft); color: var(--fm-amber); }
+.fm-logo--soon .fm-logo__mark { opacity: .75; }
+.fm-logo__name { font-weight: 700; font-size: 1.1875rem; }
+
+/* --- 7. FAQ ----------------------------------------------------------------- */
+/* Flat ink, like The idea: the page's closing dark beat, and white cards read clearly on it. */
+.fm-faq { padding: 4.375rem 1.875rem 5rem; background: var(--fm-ink); }
+.fm-faq .fm-section__head h2 { color: #fff; }
+.fm-faq__list { max-width: 57.5rem; margin: 0 auto; display: grid; gap: .75rem; }
+.fm-faq__list details { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 0 1.5rem; transition: background .15s, border-color .15s; }
+.fm-faq__list details:hover, .fm-faq__list details[open] { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.2); }
+.fm-faq__list summary {
+  cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 1.25rem;
+  padding: 1.1875rem 0; font-weight: 700; font-size: 1.225rem; color: #fff;
+}
+.fm-faq__list summary::-webkit-details-marker { display: none; }
+.fm-faq__list summary::after { content: "+"; color: var(--fm-coral-deep); font-weight: 800; font-size: 1.375rem; flex: none; }
+.fm-faq__list details[open] summary::after { content: "−"; }
+.fm-faq__list details p { padding: 0 0 1.3125rem; color: #cfcbd6; font-size: 1.1625rem; max-width: 50rem; }
+
+/* --- 8. Founder signup ------------------------------------------------------ */
+.fm-signup { position: relative; background: var(--fm-ink); color: #f4f1ee; padding: 6.25rem 1.875rem; overflow: hidden; }
+.fm-signup::before {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(50rem 25rem at 85% 110%, rgba(242,96,122,.28), transparent 60%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.035) 0 1px, transparent 1px 64px);
+  pointer-events: none;
+}
+.fm-signup__inner { position: relative; max-width: 52.5rem; margin: 0 auto; text-align: center; display: grid; gap: 1.25rem; justify-items: center; }
+.fm-signup__inner > h2 + .fm-chip { margin-top: -.75rem; }
+.fm-signup h1, .fm-signup h2 { color: #fff; font-size: clamp(2.25rem, 3.4vw, 3.25rem); letter-spacing: -.02em; font-weight: 800; display: inline-flex; align-items: center; gap: .875rem; }
+.fm-signup__sub { color: #fff; font-size: 1.5rem; font-weight: 700; }
+.fm-signup__inner > p { color: #cfcbd6; font-size: 1.275rem; }
+.fm-form { display: flex; gap: .75rem; width: 100%; max-width: 37.5rem; }
+.fm-form__input {
+  flex: 1; min-width: 0; padding: 1rem 1.375rem; border-radius: 999px; border: 1.5px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06); color: #fff; font: inherit; font-size: 1.1875rem; outline: none;
+  transition: border-color .15s, background .15s;
+}
+.fm-form__input::placeholder { color: #8f8b9c; }
+.fm-form__input:focus { border-color: var(--fm-coral); background: rgba(255,255,255,.1); }
+.fm-signup__inner > p.fm-signup__fine { font-size: 1rem; color: #8f8b9c; }
+/* On the contact page the section is the whole page, so it runs down to the footer. */
+.main-wrapper:has(.fm-contact), .fm-landing:has(.fm-contact) { display: flex; flex-direction: column; flex: 1 0 auto; }
+.fm-contact { flex: 1 0 auto; }
+/* The Enterprise contact form: email above a message field, button underneath. */
+.fm-form--stacked { flex-direction: column; max-width: 42.5rem; }
+.fm-form--stacked .fm-form__input { flex: none; }
+.fm-form__area { border-radius: 16px; resize: vertical; min-height: 6.875rem; line-height: 1.5; }
+.fm-form--stacked .fm-btn { align-self: center; }
+/* No endpoint configured yet: say so rather than post into nowhere. */
+.fm-form .fm-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* --- Infima resets ---------------------------------------------------------------
+   Infima styles bare headings, paragraphs, lists, tables and details. Everything
+   below is scoped under .fm-landing so it wins over those, and comes last so the
+   section rules it restores stay readable above. ------------------------------ */
+.fm-landing h1, .fm-landing h2, .fm-landing h3, .fm-landing h4 { color: inherit; margin: 0; font-family: inherit; }
+.fm-landing p { margin: 0; }
+.fm-landing ul, .fm-landing ol { margin: 0; padding: 0; list-style: none; }
+.fm-landing li { margin: 0; }
+.fm-landing a { color: inherit; }
+.fm-landing pre { margin: 0; }
+.fm-landing details { margin: 0; padding: 0; border: 0; box-shadow: none; background: transparent; font-size: inherit; }
+.fm-landing summary { margin: 0; padding: 0; background: transparent; border: 0; }
+.fm-landing summary::before, .fm-landing summary::after { display: none; }
+.fm-landing .fm-faq__list summary::after { display: block; position: static; background: none; -webkit-mask: none; mask: none; width: auto; height: auto; content: "+"; color: var(--fm-coral-deep); font-weight: 800; font-size: 1.375rem; }
+.fm-landing .fm-faq__list details[open] summary::after { content: "−"; transform: none; }
+.fm-landing .fm-compare > summary::before {
+  content: ""; position: static; display: block; background: none; -webkit-mask: none; mask: none;
+  width: .525rem; height: .525rem; border: solid currentColor; border-width: 0 2px 2px 0;
+  border-radius: 0; transform: translateY(-2px) rotate(45deg);
+}
+.fm-landing .fm-compare[open] > summary::before { transform: translateY(1px) rotate(-135deg); }
+.fm-landing blockquote { margin: 0; padding: 0; border: 0; color: inherit; }
+.fm-landing table:not([class]) { display: table; }
+
+.fm-landing .fm-h1 { font-size: clamp(2.5rem, 3.2vw, 3.5rem); line-height: 1.05; letter-spacing: -.025em; font-weight: 800; margin: 0 0 1.25rem; }
+.fm-landing .fm-h1 em { font-style: normal; color: var(--fm-coral-deep); }
+.fm-landing .fm-lede { margin: 0 0 1.375rem; }
+.fm-landing .fm-value { margin: 0 0 1.75rem; display: grid; }
+.fm-landing .fm-shot { margin: 0; width: clamp(42.5rem, calc(100vw - 32.5rem), 80rem); max-width: none; }
+.fm-landing .fm-shot img { margin: 0; }
+.fm-landing .fm-hero .fm-kicker { margin: 0 0 .875rem; }
+.fm-landing .fm-kicker { margin: 0 0 1rem; }
+.fm-landing .fm-section__head { margin: 0 auto 2.5rem; }
+.fm-landing .fm-section__head h2 { font-size: clamp(2.125rem, 3vw, 2.875rem); letter-spacing: -.02em; font-weight: 800; }
+.fm-landing .fm-faq .fm-section__head h2 { color: #fff; }
+.fm-landing .fm-edition__name { font-size: 1.75rem; letter-spacing: -.02em; font-weight: 800; line-height: 1.15; margin: 0; display: flex; }
+.fm-landing .fm-signup__sub { margin: 0; }
+.fm-landing .fm-checks { display: grid; }
+.fm-landing .fm-features__grid { display: grid; }
+.fm-landing .fm-feature h3 { font-size: 1.275rem; font-weight: 800; }
+.fm-landing .fm-section__lede { margin: .75rem 0 0; }
+.fm-landing .fm-start__links { margin: 1.75rem 0 0; }
+.fm-landing .fm-start__alt { color: var(--fm-coral-deep); }
+.fm-landing .fm-copy { color: #f4f1ee; }
+.fm-landing .fm-copy--done { color: #fff; }
+.fm-landing .fm-logos { display: flex; }
+.fm-landing .fm-faq__list details { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 0 1.5rem; }
+.fm-landing .fm-faq__list details:hover, .fm-landing .fm-faq__list details[open] { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.2); }
+.fm-landing .fm-faq__list summary { color: #fff; }
+.fm-landing .fm-faq__list details p { color: #cfcbd6; }
+.fm-landing .fm-faq__list summary { padding: 1.1875rem 0; display: flex; }
+.fm-landing .fm-faq__list details p { padding: 0 0 1.3125rem; }
+.fm-landing .fm-compare { margin: 3.4375rem 0 0; }
+.fm-landing .fm-compare > summary {
+  display: inline-flex; padding: 1.0625rem 2rem; border: 1px solid var(--fm-coral);
+  border-radius: 999px; background: var(--fm-card); font-size: 1.25rem;
+}
+.fm-landing .fm-compare > summary:hover { background: var(--fm-coral-soft); }
+.fm-landing table.fm-compare__table { display: table; width: 100%; margin: 0; border: 0; border-radius: 0; box-shadow: none; font-size: 1.15rem; }
+.fm-landing .fm-compare__table th, .fm-landing .fm-compare__table td { padding: .875rem 1.375rem; border: 0; border-bottom: 1px solid var(--fm-line); vertical-align: middle; min-width: 0; }
+.fm-landing .fm-compare__table thead th { padding: 1.125rem 1.375rem; background: transparent; }
+.fm-landing .fm-compare__table thead th.fm-compare__enterprise { background: var(--fm-violet-soft); }
+.fm-landing .fm-compare__group th { padding: 1.125rem 1.375rem .5rem; background: var(--fm-paper); }
+.fm-landing .fm-compare__table tbody tr:last-child th, .fm-landing .fm-compare__table tbody tr:last-child td { border-bottom: 0; }
+.fm-landing .fm-compare__table tr { background: transparent; border: 0; }
+.fm-landing .fm-signup h1, .fm-landing .fm-signup h2 { color: #fff; font-size: clamp(2.25rem, 3.4vw, 3.25rem); letter-spacing: -.02em; font-weight: 800; display: inline-flex; }
+.fm-landing .fm-code pre { background: transparent; color: inherit; }
+.fm-landing .fm-feature a { color: var(--fm-coral-deep); }
+
+/* --- The idea --- */
+.fm-landing .fm-thesis h2 { margin: 0 0 1.625rem; font-size: clamp(2.5rem, 3.6vw, 3.625rem); letter-spacing: -.025em; font-weight: 800; color: #fff; text-align: center; }
+.fm-landing .fm-thesis__lede { margin: 0 auto 3rem; }
+.fm-landing .fm-thesis__list { margin: 0 auto 3rem; display: grid; }
+.fm-landing .fm-thesis__close { margin: 0; }
+
+/* --- Responsive. Last, so it beats the resets above. ---------------------------------------------------------------- */
+@media (max-width: 64rem) {
+  .fm-hero { grid-template-columns: 1fr; justify-items: center; text-align: center;
+    gap: 3.125rem; max-width: var(--fm-max); padding: 4.0625rem 1.875rem 4.375rem; }
+  .fm-hero__copy { max-width: 47.5rem; }
+  .fm-cta { justify-content: center; }
+  .fm-landing .fm-shot { width: min(94vw, 57.5rem); margin-inline: auto; }
+  .fm-features__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 40rem) {
+  .fm-features__grid, .fm-editions__grid { grid-template-columns: 1fr; }
+  .fm-form { flex-direction: column; }
+}

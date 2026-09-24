@@ -1,0 +1,22 @@
+services:
+  flagsweep:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      # Holds the SQLite database and the Data Protection key ring for sign-in tokens.
+      - flagsweep-data:/app/data
+    # Without a secret key, connection strings are stored in PLAIN TEXT. To encrypt them,
+    # generate one (openssl rand -base64 48), put FLAGSWEEP_SECRET_KEY=... in a .env file
+    # next to this one, and uncomment both lines. See docs/installation/connection-string-encryption.md.
+    # environment:
+    #   - DataProtection__SecretKey=${FLAGSWEEP_SECRET_KEY}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  flagsweep-data:

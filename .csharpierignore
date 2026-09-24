@@ -1,0 +1,5 @@
+# EF Core owns these; `dotnet ef migrations` rewrites them.
+**/Migrations/*.cs
+
+# Nested git worktrees and tool scratch space — not this tree's source.
+.claude/

@@ -1,0 +1,24 @@
+# Build outputs and dependencies (rebuilt inside the image)
+**/node_modules
+**/dist
+**/bin*
+**/obj
+
+# Docs site (built and deployed by .github/workflows/docs.yml)
+website
+
+# Tool state and VCS
+.git
+.vscode
+.idea
+.claude
+.playwright-cli
+
+# Not needed in the image
+*.md
+!README.md
+.env*
+.DS_Store
+docs
+e2e
+tests
