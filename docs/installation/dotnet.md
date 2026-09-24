@@ -70,7 +70,7 @@ dotnet test Flagsweep.sln
 
 - `tests/Flagsweep.UnitTests`: pure unit tests, no I/O.
 - `tests/Flagsweep.FunctionalTests`: the whole API in-process against a floci-az container started by Testcontainers. Requires Docker.
-- `tests/Flagsweep.IntegrationTests`: the Azure provider against a real store. Skipped unless `AZURE_APPCONFIG_CONNECTION_STRING` is set. Point it at a dedicated test store; it writes and deletes `flagsweep-test-*` keys.
+- `tests/Flagsweep.IntegrationTests`: the Azure provider against a real store. Skipped unless `AZURE_APPCONFIG_CONNECTION_STRING` is set. Point it at a dedicated test store; it writes and deletes `flagsweep-test-*` keys, and deletes any it finds that are older than an hour.
 
 End-to-end tests with Playwright and Cucumber live in `e2e/`. They run against a fresh container in sandbox mode:
 

@@ -6,25 +6,10 @@ using Flagsweep.Infrastructure.Providers;
 namespace Flagsweep.IntegrationTests;
 
 [Trait("Category", "External")]
-public class AzureAppConfigProviderTests : IAsyncLifetime
+public class AzureAppConfigProviderTests(AzureTestStore store) : IClassFixture<AzureTestStore>
 {
-    private static string? ConnectionString =>
-        Environment.GetEnvironmentVariable(AzureConfiguredFactAttribute.ConnectionStringVariable);
-
-    private readonly List<(string Key, string? Label)> _createdSettings = [];
-
     private AzureAppConfigProvider CreateProvider() =>
-        new(new ConfigurationClient(ConnectionString), storeName: null);
-
-    private ConfigurationClient CreateRawClient() => new(ConnectionString);
-
-    private static string UniqueId(string hint) => $"flagsweep-test-{hint}-{Guid.NewGuid():N}";
-
-    private string TrackFlag(string flagId, string? label = null)
-    {
-        _createdSettings.Add((FeatureFlagConfigurationSetting.KeyPrefix + flagId, label));
-        return flagId;
-    }
+        new(new ConfigurationClient(store.ConnectionString), storeName: null);
 
     private static FeatureFlag NewFlag(
         string id,
@@ -52,7 +37,7 @@ public class AzureAppConfigProviderTests : IAsyncLifetime
     public async Task UpsertAndToggle_RoundTrip()
     {
         var provider = CreateProvider();
-        var testId = TrackFlag(UniqueId("toggle"));
+        var testId = store.UniqueId("toggle");
 
         await provider.UpsertFlagAsync(
             NewFlag(
@@ -78,7 +63,7 @@ public class AzureAppConfigProviderTests : IAsyncLifetime
     public async Task Upsert_PersistsMetadata()
     {
         var provider = CreateProvider();
-        var testId = TrackFlag(UniqueId("meta"));
+        var testId = store.UniqueId("meta");
 
         await provider.UpsertFlagAsync(
             NewFlag(
@@ -101,9 +86,9 @@ public class AzureAppConfigProviderTests : IAsyncLifetime
     public async Task ListFlags_NullLabel_ExcludesLabeledFlags()
     {
         var provider = CreateProvider();
-        var label = UniqueId("env");
-        var unlabeledId = TrackFlag(UniqueId("nolabel"));
-        var labeledId = TrackFlag(UniqueId("labeled"), label);
+        var label = store.UniqueId("env");
+        var unlabeledId = store.UniqueId("nolabel");
+        var labeledId = store.UniqueId("labeled");
 
         await provider.UpsertFlagAsync(NewFlag(unlabeledId));
         await provider.UpsertFlagAsync(NewFlag(labeledId, label));
@@ -120,9 +105,9 @@ public class AzureAppConfigProviderTests : IAsyncLifetime
     public async Task ListFlags_ByLabel_ReturnsOnlyThatLabel()
     {
         var provider = CreateProvider();
-        var label = UniqueId("env");
-        var unlabeledId = TrackFlag(UniqueId("nolabel"));
-        var labeledId = TrackFlag(UniqueId("labeled"), label);
+        var label = store.UniqueId("env");
+        var unlabeledId = store.UniqueId("nolabel");
+        var labeledId = store.UniqueId("labeled");
 
         await provider.UpsertFlagAsync(NewFlag(unlabeledId));
         await provider.UpsertFlagAsync(NewFlag(labeledId, label, isEnabled: true));
@@ -139,8 +124,8 @@ public class AzureAppConfigProviderTests : IAsyncLifetime
     public async Task ListLabels_IncludesLabelOfCreatedFlag()
     {
         var provider = CreateProvider();
-        var label = UniqueId("env");
-        var flagId = TrackFlag(UniqueId("labels"), label);
+        var label = store.UniqueId("env");
+        var flagId = store.UniqueId("labels");
 
         await provider.UpsertFlagAsync(NewFlag(flagId, label));
 
@@ -155,7 +140,7 @@ public class AzureAppConfigProviderTests : IAsyncLifetime
     public async Task Delete_RemovesFlagFromListing()
     {
         var provider = CreateProvider();
-        var testId = TrackFlag(UniqueId("del"));
+        var testId = store.UniqueId("del");
 
         await provider.UpsertFlagAsync(NewFlag(testId, isEnabled: true));
         await provider.DeleteFlagAsync(testId, null);
@@ -168,7 +153,7 @@ public class AzureAppConfigProviderTests : IAsyncLifetime
     {
         var provider = CreateProvider();
 
-        var act = () => provider.DeleteFlagAsync(UniqueId("ghost"), null);
+        var act = () => provider.DeleteFlagAsync(store.UniqueId("ghost"), null);
         await act.Should().NotThrowAsync();
     }
 
@@ -176,7 +161,7 @@ public class AzureAppConfigProviderTests : IAsyncLifetime
     public async Task FlagIdWithDots_RoundTrips()
     {
         var provider = CreateProvider();
-        var testId = TrackFlag($"flagsweep.test.dotted-{Guid.NewGuid():N}");
+        var testId = store.UniqueId("dotted.flag.id");
 
         await provider.UpsertFlagAsync(NewFlag(testId, isEnabled: true));
 
@@ -188,9 +173,8 @@ public class AzureAppConfigProviderTests : IAsyncLifetime
     [AzureConfiguredFact]
     public async Task StaleEtagWrite_IsRejectedWith412()
     {
-        var client = CreateRawClient();
-        var key = UniqueId("etag");
-        _createdSettings.Add((key, null));
+        var client = store.CreateClient();
+        var key = store.UniqueId("etag");
 
         var original = (
             await client.SetConfigurationSettingAsync(new ConfigurationSetting(key, "v1"))
@@ -201,23 +185,5 @@ public class AzureAppConfigProviderTests : IAsyncLifetime
         original.Value = "v3";
         var act = () => client.SetConfigurationSettingAsync(original, onlyIfUnchanged: true);
         (await act.Should().ThrowAsync<RequestFailedException>()).Which.Status.Should().Be(412);
-    }
-
-    public Task InitializeAsync() => Task.CompletedTask;
-
-    public async Task DisposeAsync()
-    {
-        if (_createdSettings.Count == 0 || string.IsNullOrEmpty(ConnectionString))
-            return;
-
-        var client = CreateRawClient();
-        foreach (var (key, label) in _createdSettings)
-        {
-            try
-            {
-                await client.DeleteConfigurationSettingAsync(key, label);
-            }
-            catch (RequestFailedException) { }
-        }
     }
 }

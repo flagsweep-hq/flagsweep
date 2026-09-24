@@ -79,6 +79,8 @@ jobs:
 
       - name: Test
         run: dotnet test --no-build -c Release --verbosity normal
+        env:
+          AZURE_APPCONFIG_CONNECTION_STRING: ${{ github.event_name != 'pull_request' && secrets.AZURE_APPCONFIG_CONNECTION_STRING || '' }}
 
   type-check-web:
     name: Type-check Frontend
