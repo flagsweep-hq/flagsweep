@@ -9,6 +9,7 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS backend-buil
 ARG TARGETARCH
 ARG VERSION=0.0.0
 WORKDIR /app
+COPY Directory.Build.props .editorconfig ./
 COPY src/api/ ./
 RUN dotnet restore Flagsweep.Api/Flagsweep.Api.csproj -a $TARGETARCH
 RUN dotnet publish Flagsweep.Api/Flagsweep.Api.csproj -c Release -a $TARGETARCH --no-restore \
