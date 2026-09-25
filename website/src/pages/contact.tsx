@@ -32,7 +32,7 @@ export default function Contact(): ReactNode {
 
   return (
     <Layout title="Contact" description="Questions about Flagsweep, or interested in the planned Enterprise edition?">
-      <div className="fm-landing">
+      <main className="fm-landing">
         <section className="fm-signup fm-contact" id="contact">
           <div className="fm-signup__inner">
             <h1>Contact us</h1>
@@ -97,7 +97,7 @@ export default function Contact(): ReactNode {
             </p>
           </div>
         </section>
-      </div>
+      </main>
     </Layout>
   );
 }

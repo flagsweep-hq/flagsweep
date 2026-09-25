@@ -1,21 +1,21 @@
 # Flagsweep
 
-Flagsweep is a self-hosted FeatureOps layer on top of the feature flags in your cloud. Your flags stay in Azure App Configuration, and Flagsweep adds what the portal lacks: an attributed audit trail, drift detection, locks, protected environments, owners, and retire-by dates.
+Flagsweep is a self-hosted FeatureOps layer on top of the feature flags in your cloud. Your flags stay in your cloud's store, Azure App Configuration today and AWS AppConfig soon, and Flagsweep adds what the console lacks: an attributed audit trail, drift detection, locks, protected environments, owners, and retire-by dates.
 
 ![The Flagsweep flag list: each flag's rollout across Development, Staging and Production, with status badges, owners and retire-by dates](docs/assets/img/guides/flag-list.png)
 
-Your applications keep reading flags from App Configuration with the SDKs they already use. Flagsweep writes to the same store, and leaves feature filters and variants set in Azure as they are.
+Your applications keep reading flags from your cloud's store with the SDKs they already use. Flagsweep writes to the same store, and leaves feature filters and variants set in the console as they are.
 
 ## What it does
 
 - Shows each flag as one row with its state in every environment, and lets you change any environment from the flag's page
 - Keeps an audit trail of who changed what and when, which Azure's own revision history does not record
-- Marks flags changed in Azure directly, and flags switched differently between environments
+- Marks flags changed in the cloud store directly, and flags switched differently between environments
 - Protects environments so only admins can change them, and locks individual flags in the store
 - Gives each flag an owner and a retire-by date, 90 days out by default
-- Lets people without Azure access see and change flags, with admin and member roles and link-based invitations
+- Lets people without access to the cloud account see and change flags, with admin and member roles and link-based invitations
 
-AWS AppConfig support and a hosted edition are planned.
+Azure App Configuration is supported today. AWS AppConfig is coming soon, and a hosted edition is planned.
 
 ## Quick start
 

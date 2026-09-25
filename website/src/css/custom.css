@@ -19,7 +19,7 @@
   --ifm-footer-background-color: #fdfbf9;
   --ifm-footer-link-color: #3d3b47;
   --ifm-footer-link-hover-color: #d64a63;
-  --ifm-footer-title-color: #7a7784;
+  --ifm-footer-title-color: #6c6977;
 }
 
 .navbar--dark { --ifm-navbar-link-active-color: #f78aa0; }
@@ -31,9 +31,9 @@
 }
 .navbar__github svg { display: none; }
 
-.footer { border-top: 1px solid #e9e4dd; font-size: .9rem; }
+.footer { border-top: 1px solid #e9e4dd; font-size: .9rem; text-align: center; }
 .footer__title { font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; }
-.footer__copyright { color: #7a7784; font-size: .85rem; }
+.footer__copyright { color: #6c6977; font-size: .85rem; }
 
 /* Guide screenshots are captured at 2x. The classes come from `{ .screenshot ... }` after an
    image in the Markdown, which src/remark/imageClasses.ts puts on the paragraph. */

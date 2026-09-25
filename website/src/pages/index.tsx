@@ -3,9 +3,15 @@ import Link from '@docusaurus/Link';
 import useBrokenLinks from '@docusaurus/useBrokenLinks';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import {useState, type CSSProperties, type ReactNode} from 'react';
-import flagList from '../../../docs/assets/img/guides/flag-list.png';
 import {AwsIcon, AzureIcon, CopyIcon, GitHubIcon} from '../components/icons';
+
+const TITLE = 'FeatureOps for Azure App Configuration';
+const DESCRIPTION =
+  'Self-hosted FeatureOps for Azure App Configuration and, soon, AWS AppConfig: an attributed audit trail, drift detection, locks, owners, and retire-by dates.';
+const DEFINITION =
+  "Flagsweep is a self-hosted FeatureOps layer on top of the feature flags in your cloud. Your flags stay in your cloud's store, Azure App Configuration today and AWS AppConfig soon, and Flagsweep adds what the console lacks: an attributed audit trail, drift detection, locks, protected environments, owners, and retire-by dates.";
 
 const START_COMMAND = `docker run -d --name flagsweep \\
   -p 8080:8080 \\
@@ -74,9 +80,24 @@ const ENTERPRISE_FEATURES = [
 
 const FAQ = [
   {
+    question: 'Is Flagsweep free?',
+    answer:
+      'Yes. The open-source edition runs on your own infrastructure under the Apache-2.0 licence, with no limits and no per-seat pricing. The Enterprise edition is planned, with approval workflows, single sign-on, drift alerts and CI integrations, and will be sold under a commercial licence. There are no public prices yet.',
+  },
+  {
+    question: 'How is Flagsweep different from the Azure portal?',
+    answer:
+      "The portal is for people with Azure access, and its revision history records values but no actor. Flagsweep records the signed-in user on every write, marks flags changed in Azure directly, protects environments so only admins can change them, and gives each flag an owner and a retire-by date. People without Azure access can see and change flags.",
+  },
+  {
     question: 'Does Flagsweep replace my feature flag SDK?',
     answer:
-      "No. Your applications keep reading from the provider's store with the libraries they already use, at the same latency. Flagsweep only changes how people manage the flags.",
+      "No. Your applications keep reading flags from your cloud's store with the SDKs they already use. Flagsweep writes to the same store, and leaves feature filters and variants set in the console as they are.",
+  },
+  {
+    question: 'What do I need to connect a store?',
+    answer:
+      "A read-write connection string for the store, from Settings > Access keys in the Azure portal. Flagsweep checks that it can connect, reads the store's labels, and maps each environment to one label. The connection string is stored as plain text unless a DataProtection secret key is set, and encrypted when it is.",
   },
   {
     question: 'Do my flag values leave my cloud?',
@@ -92,6 +113,11 @@ const FAQ = [
     question: 'Which providers are supported?',
     answer:
       'Azure App Configuration today. AWS AppConfig is next, with the same audit trail, out-of-sync detection, locks, and lifecycle. Mixed Azure and AWS connections will work in one Flagsweep.',
+  },
+  {
+    question: 'Does Flagsweep work with AWS AppConfig?',
+    answer:
+      'Not yet. AWS AppConfig support is coming soon, with the same attributed audit trail, out-of-sync detection, locks, owners and retire-by dates as Azure App Configuration, and Azure and AWS connections will work side by side in one Flagsweep. Your applications will keep reading flags with the AWS AppConfig SDK they already use. If you want it sooner, tell us on the contact page.',
   },
   {
     question: 'What is the licence?',
@@ -122,7 +148,7 @@ function Hero({repoUrl}: {repoUrl: string}): ReactNode {
 
       <figure className="fm-shot fm-reveal" style={revealDelay(1)}>
         <img
-          src={flagList}
+          src={useBaseUrl('/img/flag-list.webp')}
           width={1680}
           height={700}
           alt="The Flagsweep flag list: every flag's rollout across Development, Staging and Production, with Drift, Out of sync, Overdue, Retiring soon and Locked badges, owners and retire-by dates"
@@ -188,18 +214,11 @@ function Thesis(): ReactNode {
   return (
     <section className="fm-thesis" id="why">
       <div className="fm-thesis__inner">
-        <h2>Temporary flags have a way of becoming permanent.</h2>
-        <p className="fm-thesis__lede">
-          Months after a flag ships, nobody remembers who added it, whether production still matches staging, or
-          whether it is safe to delete. Removing it feels riskier than leaving it, so it stays.
-        </p>
-        <ul className="fm-thesis__list">
-          <li>Each flag has an owner, the person who decides when it comes out.</li>
-          <li>A retire-by date puts the removal on a schedule.</li>
-          <li>The audit trail records who changed a flag, when, and what it was before.</li>
-        </ul>
+        <h2 id="what-is-flagsweep">What is Flagsweep?</h2>
+        <p className="fm-thesis__lede">{DEFINITION}</p>
         <p className="fm-thesis__close">
-          Your applications keep reading flags from your cloud provider, with the libraries they already use.
+          Temporary flags have a way of becoming permanent. Flagsweep gives each one an owner and a retire-by date,
+          and records who changed it, when, and what it was before.
         </p>
       </div>
     </section>
@@ -289,7 +308,7 @@ function Editions(): ReactNode {
             </h2>
             <p className="fm-edition__tag">Free, and runs on your own infrastructure.</p>
             <p>
-              Your flags and your audit history never leave your control. Your apps keep reading App Configuration
+              Your flags and your audit history never leave your control. Your apps keep reading your cloud's store
               with the libraries and credentials they already use, so there is no Flagsweep SDK to install and no new
               keys to hand out.
             </p>
@@ -415,27 +434,81 @@ function Faq(): ReactNode {
   );
 }
 
+function structuredData(siteUrl: string, repoUrl: string) {
+  const organization = `${siteUrl}#organization`;
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': organization,
+        name: 'Flagsweep',
+        url: siteUrl,
+        logo: `${siteUrl}img/logo.svg`,
+        sameAs: [repoUrl.replace(/\/[^/]+$/, '')],
+      },
+      {'@type': 'WebSite', '@id': `${siteUrl}#website`, name: 'Flagsweep', url: siteUrl, publisher: {'@id': organization}},
+      {
+        '@type': 'SoftwareApplication',
+        name: 'Flagsweep',
+        url: siteUrl,
+        description: DEFINITION,
+        applicationCategory: 'DeveloperApplication',
+        operatingSystem: 'Docker, Linux, macOS, Windows',
+        license: 'https://www.apache.org/licenses/LICENSE-2.0',
+        isAccessibleForFree: true,
+        offers: {'@type': 'Offer', price: '0', priceCurrency: 'USD'},
+        installUrl: `${siteUrl}docs/installation/`,
+        softwareHelp: {'@type': 'CreativeWork', url: `${siteUrl}docs/guides/`},
+        author: {'@id': organization},
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: FAQ.map(({question, answer}) => ({
+          '@type': 'Question',
+          name: question,
+          acceptedAnswer: {'@type': 'Answer', text: answer},
+        })),
+      },
+      {
+        '@type': 'HowTo',
+        name: 'Install Flagsweep with Docker',
+        totalTime: 'PT5M',
+        step: [
+          {'@type': 'HowToStep', name: 'Run the container', text: START_COMMAND},
+          {'@type': 'HowToStep', name: 'Create the admin account', text: 'Open http://localhost:8080 and create the first account. It is the admin.'},
+          {
+            '@type': 'HowToStep',
+            name: 'Connect your store',
+            text: 'Paste a read-write connection string for your store and choose its environments.',
+            url: `${siteUrl}docs/guides/getting-started/`,
+          },
+        ],
+      },
+    ],
+  };
+}
+
 export default function Home(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
   const {repoUrl} = siteConfig.customFields as {repoUrl: string};
+  const siteUrl = `${siteConfig.url}${siteConfig.baseUrl}`;
 
   return (
-    <Layout
-      title="FeatureOps for Azure App Configuration"
-      description="Self-hosted FeatureOps for Azure App Configuration, with an attributed audit trail, drift detection, locks, protected environments, owners, and retire-by dates."
-    >
+    <Layout title={TITLE} description={DESCRIPTION}>
       <Head>
         <html data-landing="" />
+        <script type="application/ld+json">{JSON.stringify(structuredData(siteUrl, repoUrl))}</script>
       </Head>
-      <div className="fm-landing">
+      <main className="fm-landing">
         <Hero repoUrl={repoUrl} />
-        <GettingStarted />
         <Thesis />
+        <GettingStarted />
         <Features />
         <Providers />
         <Editions />
         <Faq />
-      </div>
+      </main>
     </Layout>
   );
 }

@@ -2,7 +2,7 @@
 
 These guides are for people using a running Flagsweep instance. For installation, configuration, and local development, see [Installation](../installation/index.md).
 
-Flagsweep is a self-hosted FeatureOps layer on top of the feature flags in your cloud. Your flags stay in Azure App Configuration, and Flagsweep adds what the portal lacks: an attributed audit trail, drift detection, locks, protected environments, owners, and retire-by dates. Every flag write goes straight through to the store.
+Flagsweep is a self-hosted FeatureOps layer on top of the feature flags in your cloud. Your flags stay in your cloud's store, Azure App Configuration today and AWS AppConfig soon, and Flagsweep adds what the console lacks: an attributed audit trail, drift detection, locks, protected environments, owners, and retire-by dates. Every flag write goes straight through to the store.
 
 ## Guides
 

@@ -4,6 +4,7 @@
 :root {
   --fm-coral: #f2607a;
   --fm-coral-deep: #d64a63;
+  --fm-coral-text: #c2364e;  /* coral for body-size text: 4.5:1 or better on every light background */
   --fm-coral-soft: #fde7ec;
   --fm-ink: #1c1b22;
   --fm-ink-2: #3d3b47;
@@ -16,7 +17,7 @@
   --fm-amber-soft: #fdf2dc;
   --fm-sky: #2f7fb8;
   --fm-sky-soft: #e3f0fa;
-  --fm-emerald: #1f9d6a;
+  --fm-emerald: #12734c;
   --fm-emerald-soft: #dff5ea;
   --fm-rose: #c73a52;
   --fm-violet: #6b3fd6;
@@ -42,7 +43,7 @@
 .fm-section__head { max-width: 55rem; margin: 0 auto 2.5rem; text-align: center; }
 .fm-kicker {
   font-size: .9rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--fm-coral-deep);
+  color: var(--fm-coral-text);
 }
 .fm-kicker--light { color: #f9b3c1; }
 .fm-kicker--center { text-align: center; }
@@ -155,16 +156,6 @@
   color: #cfcbd6; font-size: 1.275rem; line-height: 1.65; margin: 0 auto 3rem;
   max-width: 50rem; text-align: center;
 }
-.fm-thesis__list { list-style: none; margin: 0 auto 3rem; padding: 0; display: grid; gap: 1.125rem; max-width: 45rem; }
-.fm-thesis__list li {
-  position: relative; padding-left: 1.875rem; color: #cfcbd6;
-  font-size: 1.225rem; line-height: 1.55;
-}
-.fm-thesis__list li::before {
-  content: ""; position: absolute; left: 0; top: .625rem; width: .625rem; height: .625rem;
-  border-radius: 50%; background: var(--fm-coral); box-shadow: 0 0 0 4px rgba(242,96,122,.18);
-}
-.fm-thesis__list b { color: #fff; font-weight: 700; }
 .fm-thesis__close {
   margin: 0; padding-top: 2.125rem; border-top: 1px solid rgba(255,255,255,.12);
   color: #fff; font-size: 1.325rem; font-weight: 600; text-align: center;
@@ -239,7 +230,7 @@
 .fm-feature:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -28px rgba(28,27,34,.5); }
 .fm-feature h3 { font-size: 1.275rem; font-weight: 800; letter-spacing: -.01em; }
 .fm-feature p { font-size: 1.125rem; color: var(--fm-ink-2); flex: 1; }
-.fm-feature a { font-size: 1.0625rem; font-weight: 700; color: var(--fm-coral-deep); text-decoration: none; }
+.fm-feature a { font-size: 1.0625rem; font-weight: 700; color: var(--fm-coral-text); text-decoration: none; }
 .fm-feature a:hover { text-decoration: underline; }
 
 /* --- 5. Get started ----------------------------------------------------------- */
@@ -259,7 +250,7 @@
 .fm-copy--done { background: var(--fm-emerald); border-color: var(--fm-emerald); color: #fff; }
 .fm-copy span { width: auto; height: auto; border-radius: 0; background: none; }
 .fm-start__links { display: flex; flex-direction: column; align-items: center; gap: 1.125rem; margin-top: 1.75rem; }
-.fm-start__alt { font-size: 1.125rem; font-weight: 700; color: var(--fm-coral-deep); text-decoration: none; }
+.fm-start__alt { font-size: 1.125rem; font-weight: 700; color: var(--fm-coral-text); text-decoration: none; }
 .fm-start__alt:hover { text-decoration: underline; }
 .fm-start__alt-short { display: none; }
 
@@ -370,7 +361,7 @@
 .fm-landing .fm-feature h3 { font-size: 1.275rem; font-weight: 800; }
 .fm-landing .fm-section__lede { margin: .75rem 0 0; }
 .fm-landing .fm-start__links { margin: 1.75rem 0 0; }
-.fm-landing .fm-start__alt { color: var(--fm-coral-deep); }
+.fm-landing .fm-start__alt { color: var(--fm-coral-text); }
 .fm-landing .fm-copy { color: #f4f1ee; }
 .fm-landing .fm-copy--done { color: #fff; }
 .fm-landing .fm-logos { display: flex; }
@@ -395,12 +386,11 @@
 .fm-landing .fm-compare__table tr { background: transparent; border: 0; }
 .fm-landing .fm-signup h1, .fm-landing .fm-signup h2 { color: #fff; font-size: clamp(2.25rem, 3.4vw, 3.25rem); letter-spacing: -.02em; font-weight: 800; display: inline-flex; }
 .fm-landing .fm-code pre { background: transparent; color: inherit; }
-.fm-landing .fm-feature a { color: var(--fm-coral-deep); }
+.fm-landing .fm-feature a { color: var(--fm-coral-text); }
 
 /* --- The idea --- */
 .fm-landing .fm-thesis h2 { margin: 0 0 1.625rem; font-size: clamp(2.5rem, 3.6vw, 3.625rem); letter-spacing: -.025em; font-weight: 800; color: #fff; text-align: center; }
 .fm-landing .fm-thesis__lede { margin: 0 auto 3rem; }
-.fm-landing .fm-thesis__list { margin: 0 auto 3rem; display: grid; }
 .fm-landing .fm-thesis__close { margin: 0; }
 
 /* --- Scroll snap. Proximity, not mandatory: sections run from a third of a screen to

@@ -96,9 +96,11 @@ These cost debugging time before.
 - `.md` files are parsed as CommonMark, not MDX (`markdown.format: 'detect'`), so `<store>` and `{id}` in prose are safe. A page that needs JSX, such as tabs, keeps its `.md` name and sets `mdx: {format: mdx}` in its front matter, so links to it still work on GitHub.
 - `![alt](shot.png){ .screenshot screenshot--dialog }` works through `website/src/remark/imageClasses.ts`, which puts the classes on the paragraph. The styles are in `website/src/css/custom.css`.
 - A React page that is linked by anchor (`/#features`) has to register it with `useBrokenLinks().collectAnchor`, or the build fails.
-- The site URL, base URL and repo URL are constants at the top of `website/docusaurus.config.ts`. The Formspree form ID and Google Analytics ID are read there from `FORMSPREE_FORM_ID` and `GOOGLE_ANALYTICS_ID`, which `docs.yml` sets from repository secrets. Unset, the contact form is disabled and no analytics script is loaded.
+- The site URL, base URL and repo URL are constants at the top of `website/docusaurus.config.ts`. The Formspree form ID and the Umami website ID are read there from `FORMSPREE_FORM_ID` and `UMAMI_WEBSITE_ID`, which `docs.yml` sets from repository secrets. Unset, the contact form is disabled and no analytics script is loaded. Umami is cookieless, so the site has no consent banner; do not add an analytics tool that needs one.
 - The blog is wired up but has only a draft post and no navbar link yet.
-- The MkDocs site served docs from the root. `plugin-client-redirects` keeps `/guides/...` and `/installation/...` working.
+- `website/src/plugins/agentFiles.ts` writes `robots.txt`, `llms.txt`, `llms-full.txt` (the docs in sidebar order) and `pricing.md` into the build, with the site URL from the config. `npm start` does not serve them; only a build has them. Edit the text there, not in `static/`. Crawlers only honour `robots.txt` and look for `llms.txt` at the domain root, so on `flagsweep-hq.github.io/flagsweep/` they are inert until the site has its own domain.
+- The landing page's JSON-LD (`Organization`, `WebSite`, `SoftwareApplication`, `FAQPage`, `HowTo`) is built from the same constants as the visible copy in `src/pages/index.tsx`, so the FAQ array is the single source for both.
+- The social card is `static/img/social-card.png`, rendered from `website/scripts/social-card.html` at 1200×630 with headless Chrome. Regenerate it after changing the tagline. The hero screenshot is `static/img/flag-list.webp`, converted from `docs/assets/img/guides/flag-list.png` (sharp, quality 82); redo it when that screenshot is regenerated.
 
 ## Product constraints
 

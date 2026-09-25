@@ -33,6 +33,8 @@ jobs:
         working-directory: website
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -43,7 +45,7 @@ jobs:
       - run: npm run build
         env:
           FORMSPREE_FORM_ID: ${{ secrets.FORMSPREE_FORM_ID }}
-          GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
+          UMAMI_WEBSITE_ID: ${{ secrets.UMAMI_WEBSITE_ID }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: website/build

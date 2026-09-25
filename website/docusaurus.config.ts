@@ -1,6 +1,7 @@
 import type * as Preset from '@docusaurus/preset-classic';
 import type {Config} from '@docusaurus/types';
 import {themes as prismThemes} from 'prism-react-renderer';
+import agentFiles from './src/plugins/agentFiles';
 import imageClasses from './src/remark/imageClasses';
 
 const siteUrl = 'https://flagsweep-hq.github.io';
@@ -9,7 +10,21 @@ const repoUrl = 'https://github.com/flagsweep-hq/flagsweep';
 
 const formspreeFormId = process.env.FORMSPREE_FORM_ID ?? '';
 const contactFormAction = formspreeFormId && `https://formspree.io/f/${formspreeFormId}`;
-const googleAnalyticsId = process.env.GOOGLE_ANALYTICS_ID ?? '';
+const umamiWebsiteId = process.env.UMAMI_WEBSITE_ID ?? '';
+const umamiScriptUrl = process.env.UMAMI_SCRIPT_URL ?? 'https://cloud.umami.is/script.js';
+const umamiHeadTags = umamiWebsiteId
+  ? [
+      {
+        tagName: 'script',
+        attributes: {
+          defer: 'true',
+          src: umamiScriptUrl,
+          'data-website-id': umamiWebsiteId,
+          'data-domains': new URL(siteUrl).host,
+        },
+      },
+    ]
+  : [];
 
 const config: Config = {
   title: 'Flagsweep',
@@ -35,6 +50,8 @@ const config: Config = {
 
   customFields: {repoUrl, contactFormAction},
 
+  headTags: umamiHeadTags,
+
   stylesheets: [
     'https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap',
   ],
@@ -48,7 +65,8 @@ const config: Config = {
           routeBasePath: 'docs',
           sidebarPath: './sidebars.ts',
           exclude: ['assets/**'],
-          editUrl: ({docPath}) => `${repoUrl}/edit/master/docs/${docPath}`,
+          editUrl: ({docPath}) => `${repoUrl}/edit/main/docs/${docPath}`,
+          showLastUpdateTime: true,
           beforeDefaultRemarkPlugins: [imageClasses],
         },
         blog: {
@@ -59,21 +77,11 @@ const config: Config = {
           onUntruncatedBlogPosts: 'throw',
         },
         theme: {customCss: ['./src/css/custom.css', './src/css/landing.css']},
-        ...(googleAnalyticsId ? {gtag: {trackingID: googleAnalyticsId, anonymizeIP: true}} : {}),
       } satisfies Preset.Options,
     ],
   ],
 
-  plugins: [
-    [
-      '@docusaurus/plugin-client-redirects',
-      {
-        // The MkDocs site served the docs from the root: /guides/..., /installation/...
-        createRedirects: (path: string) =>
-          /^\/docs\/(guides|installation)\//.test(path) ? [path.replace(/^\/docs/, '')] : undefined,
-      },
-    ],
-  ],
+  plugins: [agentFiles],
 
   themes: [
     [
@@ -83,6 +91,7 @@ const config: Config = {
   ],
 
   themeConfig: {
+    image: 'img/social-card.png',
     colorMode: {defaultMode: 'light', disableSwitch: true, respectPrefersColorScheme: false},
     navbar: {
       title: 'Flagsweep',
@@ -121,7 +130,7 @@ const config: Config = {
           items: [
             {label: 'GitHub', href: repoUrl},
             {label: 'Issues', href: `${repoUrl}/issues`},
-            {label: 'Licence', href: `${repoUrl}/blob/master/LICENSE`},
+            {label: 'Licence', href: `${repoUrl}/blob/main/LICENSE`},
             {label: 'FeatureOps manifesto', href: 'https://featureops.io/'},
           ],
         },

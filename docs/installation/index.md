@@ -1,6 +1,6 @@
 # Installation
 
-Flagsweep is one process that serves both the API and the web UI on a single port. Data lives in a SQLite database in a data directory you choose. There are three ways to run it:
+Flagsweep is a self-hosted FeatureOps layer on top of the feature flags in your cloud. Your flags stay in your cloud's store, Azure App Configuration today and AWS AppConfig soon, and Flagsweep adds what the console lacks: an attributed audit trail, drift detection, locks, protected environments, owners, and retire-by dates. It is one process that serves both the API and the web UI on a single port. Data lives in a SQLite database in a data directory you choose. There are three ways to run it:
 
 | Method | Best for | Needs |
 |--------|----------|-------|
