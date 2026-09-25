@@ -4,8 +4,8 @@ import {themes as prismThemes} from 'prism-react-renderer';
 import agentFiles from './src/plugins/agentFiles';
 import imageClasses from './src/remark/imageClasses';
 
-const siteUrl = 'https://flagsweep-hq.github.io';
-const baseUrl = '/flagsweep/';
+const siteUrl = 'https://flagsweep.com';
+const baseUrl = '/';
 const repoUrl = 'https://github.com/flagsweep-hq/flagsweep';
 
 const formspreeFormId = process.env.FORMSPREE_FORM_ID ?? '';

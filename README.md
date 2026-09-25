@@ -30,14 +30,14 @@ Open http://localhost:8080, create the admin account, and follow [Getting starte
 
 ## Documentation
 
-The documentation is published at <https://flagsweep-hq.github.io/flagsweep/>. The pages live in [`docs/`](docs/), and the Docusaurus site that renders them, with the landing page and blog, is in [`website/`](website/):
+The documentation is published at <https://flagsweep.com/>. The pages live in [`docs/`](docs/), and the Docusaurus site that renders them, with the landing page and blog, is in [`website/`](website/):
 
 - [Installation](docs/installation/index.md): the published image, a Docker build, or building from source
 - [Configuration](docs/installation/configuration.md): settings, running behind a reverse proxy, data and backups
 - [Connection string encryption](docs/installation/connection-string-encryption.md): encrypting the stored Azure credentials
 - [Guides](docs/guides/index.md): using Flagsweep, from connecting a store to reading the audit trail
 
-To run the site locally: `cd website && npm ci && npm start`, then open http://localhost:3000/flagsweep/.
+To run the site locally: `cd website && npm ci && npm start`, then open http://localhost:3000/.
 
 ## Development
 
