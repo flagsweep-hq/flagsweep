@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question
+    url: https://github.com/flagsweep-hq/flagsweep/discussions/categories/q-a
+    about: How do I..., is this expected, does it work with... Answers stay findable for the next person.
+  - name: Suggest an idea
+    url: https://github.com/flagsweep-hq/flagsweep/discussions/categories/ideas
+    about: A feature, a change, or something another tool does better.

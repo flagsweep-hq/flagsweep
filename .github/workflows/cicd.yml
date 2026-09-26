@@ -226,6 +226,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      discussions: write
     steps:
       - uses: actions/checkout@v4
 
@@ -255,3 +256,4 @@ jobs:
         with:
           name: ${{ github.ref_name }}
           body_path: notes.md
+          discussion_category_name: Announcements

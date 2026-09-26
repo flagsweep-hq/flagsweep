@@ -124,6 +124,11 @@ const FAQ = [
     answer:
       'The open-source edition is licensed under the Apache License 2.0. You can run it, modify it, and use it inside closed-source and commercial products, as long as you keep the licence and notice files. The licence does not cover the Flagsweep name or logo. The planned Enterprise edition adds closed-source features and will be sold under a commercial licence.',
   },
+  {
+    question: 'Where do I ask a question or suggest something?',
+    answer:
+      'In the Discussions tab of the GitHub repository: Q&A for questions, Ideas for suggestions, and Show and tell for what you built. Bugs go in Issues. Every release is announced there with a thread for feedback, and the contact page reaches us directly for anything private.',
+  },
 ];
 
 const revealDelay = (step: number) => ({'--d': step}) as CSSProperties;

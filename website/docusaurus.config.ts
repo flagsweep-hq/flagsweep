@@ -129,6 +129,7 @@ const config: Config = {
           title: 'Community',
           items: [
             {label: 'GitHub', href: repoUrl},
+            {label: 'Discussions', href: `${repoUrl}/discussions`},
             {label: 'Issues', href: `${repoUrl}/issues`},
             {label: 'Licence', href: `${repoUrl}/blob/main/LICENSE`},
             {label: 'FeatureOps manifesto', href: 'https://featureops.io/'},

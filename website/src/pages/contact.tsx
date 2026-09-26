@@ -93,7 +93,8 @@ export default function Contact(): ReactNode {
               </p>
             )}
             <p className="fm-signup__fine">
-              Found a bug? <Link href={`${repoUrl}/issues`}>Open an issue on GitHub</Link>.
+              Have a question or an idea? <Link href={`${repoUrl}/discussions`}>Start a discussion on GitHub</Link>. Found a
+              bug? <Link href={`${repoUrl}/issues`}>Open an issue</Link>.
             </p>
           </div>
         </section>

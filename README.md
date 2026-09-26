@@ -39,6 +39,10 @@ The documentation is published at <https://flagsweep.com/>. The pages live in [`
 
 To run the site locally: `cd website && npm ci && npm start`, then open http://localhost:3000/.
 
+## Questions and ideas
+
+Questions, ideas and what you built with it go in [Discussions](https://github.com/flagsweep-hq/flagsweep/discussions). Bugs go in [Issues](https://github.com/flagsweep-hq/flagsweep/issues). Each release is announced in Discussions too, with a thread for feedback.
+
 ## Development
 
 Flagsweep is a .NET 10 API and a React 19 front end, with SQLite for its own data. [Build from source](docs/installation/dotnet.md) covers running it locally, the Azure App Configuration emulator, and the test suites.
