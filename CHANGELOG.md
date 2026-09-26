@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.1.0] - Unreleased
+## [0.1.0] - 2026-09-26
 
 First release. Flagsweep is a self-hosted FeatureOps layer on top of the feature flags in your cloud. Your flags stay in Azure App Configuration, and Flagsweep adds what the portal lacks: an attributed audit trail, drift detection, locks, protected environments, owners, and retire-by dates.
 

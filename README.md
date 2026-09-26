@@ -45,7 +45,7 @@ Flagsweep is a .NET 10 API and a React 19 front end, with SQLite for its own dat
 
 ## Releasing
 
-Rename the `[Unreleased]` section of [CHANGELOG.md](CHANGELOG.md) to the new version and date, commit, then tag the commit `vX.Y.Z` and push the tag. The release workflow publishes the image and creates a GitHub release from that changelog section. Every push to `master` also publishes an `edge` image.
+Rename the `[Unreleased]` section of [CHANGELOG.md](CHANGELOG.md) to the new version and date, commit, then tag the commit `vX.Y.Z` and push the tag. The release workflow publishes the image and creates a GitHub release from that changelog section. Every push to `main` also publishes an `edge` image.
 
 ## License
 
