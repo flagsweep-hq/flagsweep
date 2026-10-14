@@ -11,7 +11,7 @@ const repoUrl = 'https://github.com/flagsweep-hq/flagsweep';
 const formspreeFormId = process.env.FORMSPREE_FORM_ID ?? '';
 const contactFormAction = formspreeFormId && `https://formspree.io/f/${formspreeFormId}`;
 const umamiWebsiteId = process.env.UMAMI_WEBSITE_ID ?? '';
-const umamiScriptUrl = process.env.UMAMI_SCRIPT_URL ?? 'https://cloud.umami.is/script.js';
+const umamiScriptUrl = process.env.UMAMI_SCRIPT_URL ?? 'https://analytics.autodokas.lt/script.js';
 const umamiHeadTags = umamiWebsiteId
   ? [
       {
